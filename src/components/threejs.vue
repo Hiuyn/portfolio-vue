@@ -1,10 +1,4 @@
-<template>
-  <div class="particle-waves">
-    <div ref="canvasRef" class="canvas-container" />
-  </div>
-</template>
-
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 
@@ -14,27 +8,30 @@ const AMOUNTX = 50
 const AMOUNTY = 50
 
 // ─── Reactive state ───────────────────────────────────────────────────────────
-const canvasRef = ref(null)
-const particleCount = ref(AMOUNTX * AMOUNTY)
+const canvasRef = ref<HTMLDivElement | null>(null)
 const frameCount = ref(0)
 const waveProgress = ref(0)
 
 // ─── Three.js internals ───────────────────────────────────────────────────────
-let camera, scene, renderer, particles
+let camera!: THREE.PerspectiveCamera
+let scene!: THREE.Scene
+let renderer!: THREE.WebGLRenderer
+let particles!: THREE.Points
+
 let count = 0
-let animId = null
+let animId: number | null = null
 
 // ─── Shaders ──────────────────────────────────────────────────────────────────
 const vertexShader = /* glsl */ `
   attribute float scale;
   attribute float waveHeight;
-  varying  float vWave;
+  varying float vWave;
 
   void main() {
     vWave = waveHeight;
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
     gl_PointSize = scale * (300.0 / -mvPosition.z);
-    gl_Position  = projectionMatrix * mvPosition;
+    gl_Position = projectionMatrix * mvPosition;
   }
 `
 
@@ -48,7 +45,7 @@ const fragmentShader = /* glsl */ `
     if (dist > 0.475) discard;
 
     float alpha = 1.0 - smoothstep(0.28, 0.475, dist);
-    vec3  color = mix(colorA, colorB, vWave * 0.5 + 0.5);
+    vec3 color = mix(colorA, colorB, vWave * 0.5 + 0.5);
     gl_FragColor = vec4(color, alpha);
   }
 `
@@ -56,6 +53,8 @@ const fragmentShader = /* glsl */ `
 // ─── Init ─────────────────────────────────────────────────────────────────────
 function init() {
   const container = canvasRef.value
+  if (!container) return
+
   const W = container.clientWidth
   const H = container.clientHeight
 
@@ -63,8 +62,7 @@ function init() {
   scene = new THREE.Scene()
   scene.background = new THREE.Color(0x0a0a0f)
 
-  // Camera — diagonal isometric-style top-down view
-  // Position: elevated + offset along X & Z → looks diagonally down at origin
+  // Camera
   camera = new THREE.PerspectiveCamera(75, W / H, 1, 10000)
   camera.position.set(200, 250, 1000)
   camera.lookAt(0, 0, 0)
@@ -82,8 +80,10 @@ function init() {
       positions[i] = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2
       positions[i + 1] = 0
       positions[i + 2] = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2
+
       scales[j] = 1
       waveH[j] = 0
+
       i += 3
       j++
     }
@@ -121,6 +121,8 @@ function init() {
 // ─── Resize ───────────────────────────────────────────────────────────────────
 function onResize() {
   const container = canvasRef.value
+  if (!container) return
+
   camera.aspect = container.clientWidth / container.clientHeight
   camera.updateProjectionMatrix()
   renderer.setSize(container.clientWidth, container.clientHeight)
@@ -130,9 +132,15 @@ function onResize() {
 function loop() {
   animId = requestAnimationFrame(loop)
 
-  const pos = particles.geometry.attributes.position.array
-  const scl = particles.geometry.attributes.scale.array
-  const wvh = particles.geometry.attributes.waveHeight.array
+  const geometry = particles.geometry as THREE.BufferGeometry
+
+  const posAttr = geometry.getAttribute('position') as THREE.BufferAttribute
+  const sclAttr = geometry.getAttribute('scale') as THREE.BufferAttribute
+  const wvhAttr = geometry.getAttribute('waveHeight') as THREE.BufferAttribute
+
+  const pos = posAttr.array as Float32Array
+  const scl = sclAttr.array as Float32Array
+  const wvh = wvhAttr.array as Float32Array
 
   let i = 0,
     j = 0
@@ -150,9 +158,9 @@ function loop() {
     }
   }
 
-  particles.geometry.attributes.position.needsUpdate = true
-  particles.geometry.attributes.scale.needsUpdate = true
-  particles.geometry.attributes.waveHeight.needsUpdate = true
+  posAttr.needsUpdate = true
+  sclAttr.needsUpdate = true
+  wvhAttr.needsUpdate = true
 
   renderer.render(scene, camera)
 
@@ -165,11 +173,17 @@ function loop() {
 onMounted(init)
 
 onUnmounted(() => {
-  cancelAnimationFrame(animId)
+  if (animId !== null) cancelAnimationFrame(animId)
   window.removeEventListener('resize', onResize)
   renderer?.dispose()
 })
 </script>
+
+<template>
+  <div class="particle-waves">
+    <div ref="canvasRef" class="canvas-container" />
+  </div>
+</template>
 
 <style scoped>
 /* Reset */

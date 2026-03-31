@@ -4,7 +4,7 @@ import type { ButtonProps, PageFeatureProps, TimelineItem } from '@nuxt/ui'
 import { projects } from "../data/projects";
 import { blender } from "../data/blender";
 import { otherProjects } from "../data/otherProjects";
-import Threejs from '@/components/threejs.vue';
+import Threejs from '@/components/Threejs.vue';
 
 const links = ref<ButtonProps[]>([
   {
@@ -15,13 +15,13 @@ const links = ref<ButtonProps[]>([
     color: 'secondary',
     external: true,
   },
-  {
-    label: 'Learn more',
-    to: '/docs/getting-started/theme/design-system',
-    color: 'primary',
-    variant: 'link',
-    trailingIcon: 'i-lucide-arrow-right'
-  }
+  // {
+  //   label: 'Learn more',
+  //   to: '/docs/getting-started/theme/design-system',
+  //   color: 'primary',
+  //   variant: 'link',
+  //   trailingIcon: 'i-lucide-arrow-right'
+  // }
 ])
 const items: TimelineItem[] = [
   {
