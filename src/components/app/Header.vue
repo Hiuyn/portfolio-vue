@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { NavigationMenuItem } from '@nuxt/ui'
 import { useRoute } from 'vue-router'
+import { link } from 'fs'
 
 const route = useRoute()
 
@@ -30,8 +31,7 @@ const items = computed<NavigationMenuItem[]>(() => [
 <template>
   <UHeader class="border-none shadow-2xl">
     <template #title>
-      <router-link to="/"
-class="flex items-center gap-2">
+      <router-link to="/" class="flex items-center gap-2">
         <div
           class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg"
         >
@@ -42,12 +42,15 @@ class="flex items-center gap-2">
       <!-- <Logo class="h-6 w-auto" /> -->
     </template>
 
-    <UNavigationMenu :items="items"
-highlight highlight-color="primary" />
+    <UNavigationMenu
+      :items="items"
+      highlight
+      highlight-color="primary"
+      :ui="{ link: 'hover:before:bg-transparent data-[state=open]:before:bg-transparent' }"
+    />
 
     <template #body>
-      <UNavigationMenu :items="items"
-orientation="vertical" class="-mx-2.5" />
+      <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
     </template>
   </UHeader>
 </template>

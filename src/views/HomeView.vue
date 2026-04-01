@@ -145,7 +145,10 @@ const skills = reactive({
       container: 'px-0 sm:px-0 lg:px-0 pb-0 sm:pb-0 lg:pb-0',
     }"
   >
-    <UContainer class="text-center text-2xl text-muted">
+    <UContainer 
+      v-scroll-reveal
+      class="text-center text-2xl text-muted"
+    >
       <div v-html="introduction" />
     </UContainer>
   </UPageSection>
@@ -156,30 +159,36 @@ const skills = reactive({
     :features="features"
   >
     <img
+      v-scroll-reveal
       src="https://picsum.photos/704/1294"
       width="352"
       height="647"
       alt="Illustration"
-      class="w-full rounded-lg h-[500px]"
+      class="w-full rounded-lg h-[500px] object-cover object-center"
       loading="lazy"
     >
     <template #footer>
-      <div class="description">
+      <div
+        v-scroll-reveal
+        class="description"
+      >
         <ul>
           <li
             v-for="(skill, category) in skills"
             :key="category"
-            class="flex gap-2 mb-2"
+            class="flex gap-2 mb-2 items-center"
           >
-            <h4>{{ skill.name }}</h4>
-            <UBadge
-              v-for="item in skill.items"
-              :key="item"
-              variant="outline"
-              color="secondary"
-            >
-              {{ item }}
-            </UBadge>
+            <h4>{{ skill.name }}:</h4>
+            <div class="flex gap-2 flex-wrap">
+              <UBadge
+                v-for="item in skill.items"
+                :key="item"
+                variant="outline"
+                color="secondary"
+              >
+                {{ item }}
+              </UBadge>
+            </div>
           </li>
         </ul>
       </div>
@@ -201,6 +210,7 @@ const skills = reactive({
     >
       <template #wrapper="{ item }">
         <UPageCard
+          v-scroll-reveal
           variant="solid"
           "
         >
@@ -230,6 +240,7 @@ const skills = reactive({
       <UPageCard
         v-for="(post, index) in projects.slice(0, 3)"
         :key="index"
+        v-scroll-reveal
         orientation="horizontal"
         :reverse="index % 2 !== 0"
         v-bind="post"
@@ -275,6 +286,7 @@ const skills = reactive({
       <UPageCard
         v-for="(post, index) in blender"
         :key="index"
+        v-scroll-reveal
         orientation="horizontal"
         :reverse="index % 2 !== 0"
         v-bind="post"
@@ -323,6 +335,7 @@ const skills = reactive({
       <UPageCard
         v-for="(post, index) in otherProjects"
         :key="index"
+        v-scroll-reveal="index * 100"
         v-bind="post"
         spotlight
         spotlight-color="primary"
