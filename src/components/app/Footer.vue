@@ -57,11 +57,10 @@ const links = [
 </script>
 
 <template>
-  <UFooter>
+  <UFooter :ui="{ left: 'justify-start', center: 'lg:justify-center justify-between ' }">
     <template #left>
       <div class="flex flex-col gap-8">
-        <router-link to="/"
-class="flex items-center gap-2">
+        <router-link to="/" class="flex items-center gap-2">
           <div
             class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg"
           >
@@ -70,8 +69,7 @@ class="flex items-center gap-2">
           <p class="font-bold text-xl hidden sm:block">Quách Ngọc Hiển</p>
         </router-link>
         <div class="flex flex-col gap-2">
-          <template v-for="infor in inforList"
-:key="infor.id">
+          <template v-for="infor in inforList" :key="infor.id">
             <p class="text-sm">
               {{ infor.text }}
             </p>

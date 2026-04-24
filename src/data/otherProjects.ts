@@ -16,6 +16,8 @@ type OtherProjectProps = {
   class?: string
   orientation?: 'horizontal' | 'vertical'
   reverse?: boolean
+  to?: string
+  target?: '_blank'
 }
 
 export const otherProjects: OtherProjectProps[] = [
@@ -32,7 +34,9 @@ export const otherProjects: OtherProjectProps[] = [
       width: 800,
       height: 600
     },
-    reverse: false
+    reverse: false,
+    to: 'https://xkldakiko.com/',
+    target: '_blank'
   },
   {
     headline: 'Gobox Software ',
@@ -64,7 +68,9 @@ export const otherProjects: OtherProjectProps[] = [
       width: 800,
       height: 600
     },
-    reverse: true
+    reverse: true,
+    to: 'https://pi-s-pet-shop-ai.vercel.app/',
+    target: '_blank'
   },
   {
     headline: 'Fit Mart',
